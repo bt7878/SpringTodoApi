@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/todos")
@@ -25,8 +26,8 @@ class TodoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Todo> getTodoById(@PathVariable Long id) {
-        Todo todo = todoService.getTodoById(id);
-        return todo != null ? ResponseEntity.ok(todo) : ResponseEntity.notFound().build();
+        Optional<Todo> todo = todoService.getTodoById(id);
+        return todo.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -36,8 +37,8 @@ class TodoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @Valid @RequestBody Todo todo) {
-        Todo existingTodo = todoService.getTodoById(id);
-        if (existingTodo == null) {
+        Optional<Todo> existingTodo = todoService.getTodoById(id);
+        if (existingTodo.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         todo.setId(id);
@@ -46,8 +47,8 @@ class TodoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-        Todo todo = todoService.getTodoById(id);
-        if (todo == null) {
+        Optional<Todo> existingTodo = todoService.getTodoById(id);
+        if (existingTodo.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         todoService.deleteTodo(id);

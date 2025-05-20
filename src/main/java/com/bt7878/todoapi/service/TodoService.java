@@ -5,6 +5,7 @@ import com.bt7878.todoapi.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -19,8 +20,8 @@ public class TodoService {
         return (List<Todo>) todoRepository.findAll();
     }
 
-    public Todo getTodoById(Long id) {
-        return todoRepository.findById(id).orElse(null);
+    public Optional<Todo> getTodoById(Long id) {
+        return todoRepository.findById(id);
     }
 
     public Todo saveTodo(Todo todo) {
@@ -30,5 +31,5 @@ public class TodoService {
     public void deleteTodo(Long id) {
         todoRepository.deleteById(id);
     }
-    
+
 }

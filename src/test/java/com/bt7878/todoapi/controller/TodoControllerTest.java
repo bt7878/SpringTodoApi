@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -79,7 +80,7 @@ class TodoControllerTest {
     @Test
     void getTodoById_WithExistingId_ShouldReturnTodo() throws Exception {
         // Arrange
-        when(todoService.getTodoById(1L)).thenReturn(todo1);
+        when(todoService.getTodoById(1L)).thenReturn(Optional.of(todo1));
 
         // Act & Assert
         mockMvc.perform(get("/api/todos/1"))
@@ -94,7 +95,7 @@ class TodoControllerTest {
     @Test
     void getTodoById_WithNonExistingId_ShouldReturnNotFound() throws Exception {
         // Arrange
-        when(todoService.getTodoById(99L)).thenReturn(null);
+        when(todoService.getTodoById(99L)).thenReturn(Optional.empty());
 
         // Act & Assert
         mockMvc.perform(get("/api/todos/99"))
@@ -157,7 +158,7 @@ class TodoControllerTest {
         savedTodo.setTitle("Updated Todo");
         savedTodo.setCompleted(true);
 
-        when(todoService.getTodoById(1L)).thenReturn(todo1);
+        when(todoService.getTodoById(1L)).thenReturn(Optional.of(todo1));
         when(todoService.saveTodo(any(Todo.class))).thenReturn(savedTodo);
 
         // Act & Assert
@@ -180,7 +181,7 @@ class TodoControllerTest {
         updatedTodo.setTitle("Updated Todo");
         updatedTodo.setCompleted(true);
 
-        when(todoService.getTodoById(99L)).thenReturn(null);
+        when(todoService.getTodoById(99L)).thenReturn(Optional.empty());
 
         // Act & Assert
         mockMvc.perform(put("/api/todos/99")
@@ -195,7 +196,7 @@ class TodoControllerTest {
     @Test
     void deleteTodo_WithExistingId_ShouldReturnNoContent() throws Exception {
         // Arrange
-        when(todoService.getTodoById(1L)).thenReturn(todo1);
+        when(todoService.getTodoById(1L)).thenReturn(Optional.of(todo1));
         doNothing().when(todoService).deleteTodo(1L);
 
         // Act & Assert
@@ -209,7 +210,7 @@ class TodoControllerTest {
     @Test
     void deleteTodo_WithNonExistingId_ShouldReturnNotFound() throws Exception {
         // Arrange
-        when(todoService.getTodoById(99L)).thenReturn(null);
+        when(todoService.getTodoById(99L)).thenReturn(Optional.empty());
 
         // Act & Assert
         mockMvc.perform(delete("/api/todos/99"))

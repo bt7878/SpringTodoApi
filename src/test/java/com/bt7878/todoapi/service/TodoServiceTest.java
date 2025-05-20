@@ -64,25 +64,25 @@ class TodoServiceTest {
         when(todoRepository.findById(1L)).thenReturn(Optional.of(todo1));
 
         // Act
-        Todo result = todoService.getTodoById(1L);
+        Optional<Todo> result = todoService.getTodoById(1L);
 
         // Assert
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Test Todo 1", result.getTitle());
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getId());
+        assertEquals("Test Todo 1", result.get().getTitle());
         verify(todoRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getTodoById_WithNonExistingId_ShouldReturnNull() {
+    void getTodoById_WithNonExistingId_ShouldReturnEmptyOptional() {
         // Arrange
         when(todoRepository.findById(3L)).thenReturn(Optional.empty());
 
         // Act
-        Todo result = todoService.getTodoById(3L);
+        Optional<Todo> result = todoService.getTodoById(3L);
 
         // Assert
-        assertNull(result);
+        assertTrue(result.isEmpty());
         verify(todoRepository, times(1)).findById(3L);
     }
 
